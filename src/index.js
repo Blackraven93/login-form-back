@@ -1,10 +1,20 @@
-import Person from "./hello.js";
+import http from "http";
+import fs from "fs";
 
-const init = () => {
-  console.log("Hello world!");
-};
+const app = http.createServer((request, response) => {
+  let url = request.url;
+  if (request.url === "/") {
+    url = "/src/view/index.html";
+  }
 
-const raven = new Person("raven");
-console.log(raven.greeting());
+  if (request.url === "/favicon.ico") return response.writeHead(404);
 
-init();
+  response.writeHead(200);
+  response.end(fs.readFileSync(process.cwd() + url));
+});
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`http://localhost:${PORT}`);
+});
