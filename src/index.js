@@ -1,21 +1,16 @@
 import http from "http";
-import fs from "fs";
+import fs, { readFileSync } from "fs";
 
 const app = http.createServer((request, response) => {
   let _url = request.url;
-  console.log(_url);
-
-  // const queryString = URLClass.queryString;
-  // console.log(queryString);
 
   if (_url === "/") {
     _url = "/src/view/index.html";
     const URLClass = new URL("http://localhost:3000/?name=raven");
-    console.log(URLClass.searchParams.get("name"));
-
-    //MEMO: Legacy Code
-    // const queryData = url.parse(_url, true).query;
-    // console.log(queryData.id);
+    const name = URLClass.searchParams.get("name");
+    const template = `<h1>bye bye~!!!!! ${name}</h1>`;
+    response.end(template);
+    return;
   }
 
   if (_url === "/favicon.ico") return response.writeHead(404);
