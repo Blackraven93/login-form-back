@@ -1,24 +1,28 @@
 import http from "http";
-import fs, { readFileSync } from "fs";
+import fs from "fs";
 
 const app = http.createServer((request, response) => {
   let _url = request.url;
-
+  console.log(_url);
   if (_url === "/") {
     _url = "/src/view/index.html";
-    const URLClass = new URL("http://localhost:3000/?name=raven");
-    const name = URLClass.searchParams.get("name");
-    const template = `<h1>bye bye~!!!!! ${name}</h1>`;
-    response.end(template);
+    response.writeHead(200);
+    response.end(fs.readFileSync(process.cwd() + _url));
     return;
   }
 
-  if (_url === "/favicon.ico") return response.writeHead(404);
+  if (_url === "/favicon.ico") {
+    response.writeHead(404);
+    return;
+  }
 
   response.writeHead(200);
-  console.log(process.cwd());
-  console.log(__dirname);
-  response.end(fs.readFileSync(process.cwd() + _url));
+
+  const { host } = request.headers;
+  const URLClass = new URL(`http://${host}${_url}`);
+  const name = URLClass.searchParams.get("name");
+  const template = `<h1>bye bye~!!!!! ${name}</h1>`;
+  response.end(template);
 });
 
 const PORT = 3000;
